@@ -12,18 +12,18 @@ Proyecto para las clases virtuales sincrónicas del Instituto Tecnológico Río 
 
 Si te querés traer este mismo repo, tenés que:
 
-1. Clonar el repositorio con ssh
+### 1. Clonar el repositorio con ssh
 
 ```shell
 git clone git@github.com:FacuLemo/drf-2026.git
 ```
 
-2. Entrar en el proyecto
+### 2. Entrar en el proyecto
 ```shell
 cd drf-2026
 ```
 
-3. Instalar las dependencias
+### 3. Instalar las dependencias
 
 Como el proyecto utiliza uv, podés instalar las dependencias definidas en el proyecto con:
 ```shell
@@ -33,7 +33,7 @@ Esto creará/actualizará el entorno virtual y sincronizará las dependencias de
 Si no tienen uv, lo encuentran [acá](#crear-proyecto-nuevo-con-uv)
 
 
-4. Ejecutar las migraciones
+### 4. Ejecutar las migraciones
 
 Entra en src:
 ```shell
@@ -45,7 +45,7 @@ Y ejecuta:
 uv run manage.py migrate
 ```
 
-5. Ahora se inicia el servidor con:
+### 5. Ahora se inicia el servidor con:
 ```shell
 uv run manage.py runserver
 ```
@@ -57,7 +57,7 @@ http://127.0.0.1:8000/
 
 # Crear Proyecto nuevo con uv
 
-1. Instalar uv
+### 1. Instalar uv
 
 Si todavía no tienes uv, puedes instalarlo ejecutando:
 ```shell
@@ -67,7 +67,7 @@ Si no funciona consulten la [documentación oficial](https://astral.sh/uv)
 
 Después, reinicia la terminal para que uv quede disponible en el PATH.
 
-2. Crear el proyecto
+### 2. Crear el proyecto
 
 Inicializa un nuevo proyecto con:
 ```shell
@@ -79,7 +79,7 @@ Entra en la carpeta:
 cd Proyecto-django
 ```
 
-3. Instalar las dependencias
+### 3. Instalar las dependencias
 
 Instala Django:
 ```shell
@@ -90,7 +90,7 @@ Instala Django REST Framework:
 uv add djangorestframework
 ```
 
-4. Crear el proyecto de Django
+### 4. Crear el proyecto de Django
 
 Entra en la carpeta src:
 ```shell
@@ -106,13 +106,12 @@ uv run django-admin startproject nucleo .
 Importante: no olvides el . al final del comando.
 Este punto indica que el proyecto de Django debe crearse en el directorio actual.
 
-5. Ejecutar el servidor
+### 5. Ejecutar el servidor
 
 Desde la carpeta src, ejecuta:
 ```shell
 uv run manage.py runserver
 ```
-
 
 Si todo está correctamente configurado, Django iniciará el servidor de desarrollo.
 
@@ -136,8 +135,8 @@ uv run manage.py runserver
 
 Trabajar con un repositorio existente
 ```shell
-git clone <URL_DEL_REPOSITORIO>
-cd Proyecto-django
+git clone git@github.com:FacuLemo/drf-2026.git
+cd drf-2026
 uv sync
 cd src
 uv run manage.py migrate
