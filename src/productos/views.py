@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .models import Articulo, Proveedor
@@ -40,6 +41,7 @@ from .serializers import (
 # Concrete generic
 class ArticulosListCreateAPIView(generics.ListCreateAPIView):
     queryset = Articulo.objects.all().select_related("proveedor")
+    permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -90,6 +92,7 @@ class ArticulosListCreateAPIView(generics.ListCreateAPIView):
 class ArticulosDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Articulo.objects.all()
     serializer_class = ArticuloSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
 
 
 # Generic APIView
