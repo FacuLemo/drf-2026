@@ -1,6 +1,6 @@
-from rest_framework import generics, status
-from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .models import Articulo, Proveedor
@@ -38,16 +38,27 @@ from .serializers import (
 # Destroy -> Delete
 
 
-# Concrete generic
-class ArticulosListCreateAPIView(generics.ListCreateAPIView):
+class ArticuloViewSet(viewsets.ModelViewSet):
     queryset = Articulo.objects.all().select_related("proveedor")
-    permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method == "GET":
             return ArticuloPublicSerializer
         else:
             return ArticuloSerializer
+
+
+# Concrete generic
+# class ArticulosListCreateAPIView(generics.ListCreateAPIView):
+#     queryset = Articulo.objects.all().select_related("proveedor")
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+
+#     def get_serializer_class(self):
+#         if self.request.method == "GET":
+#             return ArticuloPublicSerializer
+#         else:
+#             return ArticuloSerializer
 
 
 # Generic APIView
@@ -89,10 +100,10 @@ class ArticulosListCreateAPIView(generics.ListCreateAPIView):
 
 
 # Concrete generic
-class ArticulosDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Articulo.objects.all()
-    serializer_class = ArticuloSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
+# class ArticulosDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Articulo.objects.all()
+#     serializer_class = ArticuloSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 # Generic APIView
@@ -150,21 +161,34 @@ class ArticulosDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 # ----------------------------------
 
 
-@api_view(["GET", "POST"])
-def proveedor(request):
-    if request.method == "GET":
-        proveedores = Proveedor.objects.all()
-        serializer = ProveedorSerializer(proveedores, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class ProveedorViewSet(viewsets.ModelViewSet):
+    queryset = Proveedor.objects.all()
+    serializer_class = ProveedorSerializer
+    permission_classes = [IsAuthenticated]
 
-    if request.method == "POST":
-        serializer = ProveedorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {"mensaje": "Proveedor creado"}, status=status.HTTP_201_CREATED
-            )
-        return Response(
-            {"mensaje": "No se creó porque no es válido"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+    @action(detail=True, methods=["delete", "get"])
+    def borrado_logico(self, request, pk=None):
+        proveedor = self.get_object()
+        proveedor.activo = False
+        proveedor.save()
+        return Response({"status": "Proveedor borrado con éxito"})
+
+
+# @api_view(["GET", "POST"])
+# def proveedor(request):
+#     if request.method == "GET":
+#         proveedores = Proveedor.objects.all()
+#         serializer = ProveedorSerializer(proveedores, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#     if request.method == "POST":
+#         serializer = ProveedorSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(
+#                 {"mensaje": "Proveedor creado"}, status=status.HTTP_201_CREATED
+#             )
+#         return Response(
+#             {"mensaje": "No se creó porque no es válido"},
+#             status=status.HTTP_400_BAD_REQUEST,
+#         )
