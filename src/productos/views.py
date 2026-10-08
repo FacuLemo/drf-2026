@@ -48,7 +48,7 @@ class ArticuloViewSet(viewsets.ModelViewSet):
 
     queryset = Articulo.objects.all().select_related("proveedor")
     permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
-    filterset_backends = [
+    filter_backends = [
         DjangoFilterBackend,
         SearchFilter,
         OrderingFilter,
