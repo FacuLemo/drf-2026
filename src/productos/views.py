@@ -1,9 +1,10 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .models import Articulo, Proveedor
 from .serializers import (
@@ -41,24 +42,45 @@ from .serializers import (
 
 
 class ArticuloViewSet(viewsets.ModelViewSet):
+    """
+    Descripción general a todos los endpoints que sirva este viewset
+    """
+
     queryset = Articulo.objects.all().select_related("proveedor")
     permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]  # noqa: RUF012
+    filterset_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+        OrderingFilter,
+    ]  # noqa: RUF012
 
     filterset_fields = {  # noqa: RUF012
         "proveedor": ["exact"],
-        "precio": ["exact","gt", "lt", "gte","lte"],
+        "precio": ["exact", "gt", "lt", "gte", "lte"],
         "proveedor__activo": ["exact"],
-        #"fecha_de_creacion":["exact","gt", "lt", "gte","lte"],
-    } 
-    search_fields = ["nombre", "proveedor__nombre"]# noqa: RUF012
-    ordering_fields= ["precio","id","nombre"]
+        # "fecha_de_creacion":["exact","gt", "lt", "gte","lte"],
+    }
+    search_fields = ["nombre", "proveedor__nombre"]  # noqa: RUF012
+    ordering_fields = ["precio", "id", "nombre"]  # noqa: RUF012
 
     def get_serializer_class(self):
         if self.request.method == "GET":
             return ArticuloPublicSerializer
         else:
             return ArticuloSerializer
+
+    @extend_schema(
+        summary="Creación Custom de Articulo",
+        description="Si stock < 0 se asume otra sucursal",
+        responses={
+            201: ArticuloSerializer,  # created
+            400: OpenApiResponse(description="Error de validación "),
+        },
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(
+            request, *args, **kwargs
+        )  # No cambiamos la función interna del create
 
 
 class ProveedorViewSet(viewsets.ModelViewSet):
