@@ -15,17 +15,19 @@ class ProveedorSerializer(serializers.ModelSerializer):
 
 
 class ArticuloPublicSerializer(serializers.ModelSerializer):
-    proveedor = ProveedorSerializer(read_only=True) #Many=True si fuera relacion Muchos Muchos
+    proveedor = ProveedorSerializer(read_only=True)
 
     class Meta:
         model = Articulo
-        fields = [  # noqa: RUF012
+        fields = [
             "id",
             "nombre",
+            "stock",
             "precio",
             "proveedor",  # Nested Field
+            "timestamp",
         ]
-        read_only_fields = ["id", "timestamp"]  # noqa: RUF012
+        read_only_fields = ["id", "timestamp"]
 
 
 class ArticuloSerializer(serializers.ModelSerializer):
