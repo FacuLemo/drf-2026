@@ -46,7 +46,7 @@ class ArticuloViewSet(viewsets.ModelViewSet):
     Descripción general a todos los endpoints que sirva este viewset
     """
 
-    queryset = Articulo.objects.all().select_related("proveedor")
+    queryset = Articulo.objects.all().select_related("proveedor").order_by("id")
     permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
     filter_backends = [
         DjangoFilterBackend,
@@ -84,7 +84,7 @@ class ArticuloViewSet(viewsets.ModelViewSet):
 
 
 class ProveedorViewSet(viewsets.ModelViewSet):
-    queryset = Proveedor.objects.all()
+    queryset = Proveedor.objects.all().order_by("id")
     serializer_class = ProveedorSerializer
     permission_classes = [IsAuthenticated]
 
