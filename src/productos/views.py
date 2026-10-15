@@ -3,7 +3,7 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Articulo, Proveedor
@@ -13,33 +13,6 @@ from .serializers import (
     ProveedorSerializer,
 )
 
-# Objeto Python -> No se envia en Response
-# hay que Serializarlo
-# Objeto de Python -> JSON: JavaScript Object Notation
-# Articulo -> {"nombre": "lata de atún", "precio":1500, "timestamps"}
-
-# [{},{},{},{}]
-
-# APIS RESTFUL
-
-# GET /ARTICULO
-# POST /ARTICULO
-
-# -------------------------------------------
-# MIGRACION A VISTAS BASADAS EN CLASES DE DRF:
-
-# Tenemos las clases:
-# APIView
-# Generics de APIView
-# Concrete Generic APIView
-
-# Las dos últimas usan un léxico específico:
-# List -> GET all
-# Create -> POST
-# Retrieve -> GET by id/pk
-# Update -> PUT
-# Destroy -> Delete
-
 
 class ArticuloViewSet(viewsets.ModelViewSet):
     """
@@ -47,7 +20,7 @@ class ArticuloViewSet(viewsets.ModelViewSet):
     """
 
     queryset = Articulo.objects.all().select_related("proveedor").order_by("id")
-    permission_classes = [IsAuthenticatedOrReadOnly]  # noqa: RUF012
+    permission_classes = [AllowAny]  # noqa: RUF012
     filter_backends = [
         DjangoFilterBackend,
         SearchFilter,
@@ -86,7 +59,7 @@ class ArticuloViewSet(viewsets.ModelViewSet):
 class ProveedorViewSet(viewsets.ModelViewSet):
     queryset = Proveedor.objects.all().order_by("id")
     serializer_class = ProveedorSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @action(
         detail=True,
